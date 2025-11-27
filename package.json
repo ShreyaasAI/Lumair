@@ -1,0 +1,48 @@
+{
+    "name": "lumair",
+    "version": "1.0.0",
+    "description": "AI-powered air quality prediction system",
+    "scripts": {
+      "setup": "node scripts/setup.js",
+      "dev": "concurrently \"pnpm dev:backend\" \"pnpm dev:frontend\"",
+      "dev:backend": "cd backend && uvicorn main:app --reload",
+      "dev:frontend": "cd frontend && pnpm dev",
+      "docker:up": "docker-compose up -d",
+      "docker:down": "docker-compose down",
+      "docker:logs": "docker-compose logs -f",
+      "docker:restart": "docker-compose restart",
+      "docker:clean": "docker-compose down -v",
+      "db:init": "docker-compose exec backend python -c \"from database import init_db; init_db()\"",
+      "db:seed": "node scripts/seed-data.js",
+      "ml:train": "docker-compose exec backend python ml/train_model.py",
+      "ml:collect": "docker-compose exec backend python -c \"from database import SessionLocal; from ml.data_collector import DataCollector; db = SessionLocal(); c = DataCollector(db); c.collect_all_active_locations(); db.close()\"",
+      "test:api": "node scripts/test-api.js",
+      "build": "cd frontend && pnpm build",
+      "start": "pnpm docker:up",
+      "stop": "pnpm docker:down",
+      "logs": "pnpm docker:logs",
+      "clean": "pnpm docker:clean && rm -rf node_modules frontend/node_modules"
+    },
+    "keywords": [
+      "air-quality",
+      "aqi",
+      "machine-learning",
+      "prediction",
+      "fastapi",
+      "react"
+    ],
+    "author": "Your Name",
+    "license": "MIT",
+    "devDependencies": {
+      "concurrently": "^8.2.2",
+      "chalk": "^4.1.2",
+      "ora": "^5.4.1",
+      "prompts": "^2.4.2",
+      "axios": "^1.6.5",
+      "dotenv": "^16.4.1"
+    },
+    "engines": {
+      "node": ">=18.0.0",
+      "pnpm": ">=8.0.0"
+    }
+  }
